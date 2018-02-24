@@ -3,11 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min..css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
 </head>
 <body>
-    <p>Saba</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-5">
+            <form id="itinerary">
+                <div class="form-group">
+                    <label for="origin">Origin*</label>
+                    <input type="text" class="form-control" id="origin" aria-describedby="emailHelp" placeholder="Enter departure city">
+                </div>
+                <div class="form-group">
+                    <label for="departure_date">Departure Date*</label>
+                    <input type="text" class="form-control" id="departure_date" placeholder="2018-03-03--2018-03-15">
+                </div>
+                <!--<div class="form-check">-->
+                    <!--<input type="checkbox" class="form-check-input" id="one_way">-->
+                    <!--<label class="form-check-label" for="one_way">One way trip</label>-->
+                <!--</div>-->
+                <!--Lots of itinerary will be removed because of this. can be removed-->
+                <!--<div class="form-check">-->
+                    <!--<input type="checkbox" class="form-check-input" id="direct">-->
+                    <!--<label class="form-check-label" for="direct">Direct flights only</label>-->
+                <!--</div>-->
+                <div class="form-group">
+                    <label for="duration">Duration</label>
+                    <input type="number" class="form-control" id="duration" placeholder="Days">
+                </div>
+                <div class="form-group">
+                    <label for="max_price">Max_price</label>
+                    <input type="number" class="form-control" id="max_price" placeholder="">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="col-md-7">
 
-<script></script>
+        </div>
+    </div>
+</div>
+<script
+        src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+<script>
+    var apikey = "YTpayeI2uV2Ae5DxlH4GlcIW7iawOFll";
+    function triggerInspirationAPI(origin, departure_date, duration, max_price) {
+        var payload = {
+            "apikey": apikey,
+            "origin" : origin,
+            "departure_date" : departure_date,
+            "duration" : duration,
+            "max_price" : max_price
+        };
+        $.ajax({
+            url: "https://api.sandbox.amadeus.com/v1.2/flights/inspiration-search",
+            type: "GET",
+            data: payload,
+            async: false
+        }).done(function(response) {
+            console.log(response.results.slice(0,2));
+            return response;
+        }).fail(function (data) {
+            console.log(data);
+        });
+    }
+
+    function isDurationComplete(duration) {
+        return duration <=1;
+    }
+    $(document).ready(function() {
+        //Flight Inspiration API
+        $("#itinerary").on("submit", function(event) {
+            event.preventDefault();
+            var duration = $("#duration").val();
+            var departure_date = $("#departure_date").val();
+            var origin = $("#origin").val();
+            var firstCall = triggerInspirationAPI(origin, departure_date,
+                duration, $("#max_price").val());
+            duration = duration - 2;
+            var list = [];
+            list.push([origin, firstCall[0].destination]);
+            while (!isDurationComplete(duration)) {
+                while (firstCall.length !== 0) {
+                    var dest = firstCall.unshift();
+                    var nextDest = firstriggerInspirationAPI(dest.destination, $("#departure_date").val() + 2,
+                        $("#duration").val() - 2, $("#max_price").val());
+
+                }
+            }
+
+        });
+    });
+
+</script>
 </body>
 </html>
