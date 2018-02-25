@@ -19,7 +19,7 @@
         #scroll {
             margin: 30px 0 ;
             overflow-y: scroll;
-            height:500px;
+            height:700px;
         }
 
     </style>
@@ -115,6 +115,7 @@
             }
         }).fail(function (data) {
             console.log(data);
+            dest = false;
         });
         return dest;
     }
@@ -171,6 +172,9 @@
 
         var response = triggerInspirationAPI(origin, departure_date,
             duration, max_price);
+        if(!response) {
+            return;
+        }
         var destinations;
         if(cityToDetail[origin].depth === 0) {
             destinations = getDestinationPerDate(response.results, duration);
@@ -270,11 +274,13 @@
             console.log("Paths");
             console.log(paths);
             addRows(paths, duration);
-
+            scroll($("#cities"));
             console.log(cityToDetail);
 
         });
-
+        function scroll(object) {
+            $("html, body").animate({ scrollTop: object.position().top })
+        }
         function addRows(paths,duration) {
             var h2 = $("#tableTitle").text("These are your possible destinations. Please click on one the itenararies to know more");
 
