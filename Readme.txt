@@ -14,6 +14,11 @@ Amadeus APIs used/plan to be used:--
 *** Hotel Airport Search: To get the list of hotels near the destination airports
 *** Car Rental Airport Search: To get the best possible car rentals near the airport
 
+Assumptions:--
+*** Data provided by the APIs is correct and absolute
+*** For the prototype , we only show maximum upto 3 stopovers per itinerary
+
+
 Sample Test Data:-
 Input:
         ** Origin:Chicago
@@ -31,16 +36,18 @@ Output:
                         02/24/18 - 02/26/18 - 02/30/18
                 -->Chicago - London - Chicago                           Approximate fare: 820$
                         02/23/18 - 02/29/18
+Planned enhancements: 
           ** Once the user selects the interesting itinerary, it gives you all the points of interest of the destination cities.
           ** Then the user is promted to book the flights for the slected itinerary.
           ** Based on the destinations, hotel booking is called.
           ** On the basis of multiple stops , the car rentals are suggested and booked.
+
 Unique Features: 
 ** Unlike most of the apps and serach engines present today , it does not fixes the destination , ather suggests them .
 ** It gives an optimal path from origin to your destination enabling you to visit as many and as interesting places as possible.
 
 Technologies used: 
-Java script, HTML, CSS, Ajax, Jquery
+Java script, HTML, CSS, Ajax, Jquery,Express, Node.js
 
 Team members: 
 Saba Kathawala, Deepika Tripathi, Mohit Kumar Paritosh Ghia
