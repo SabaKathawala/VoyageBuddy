@@ -121,7 +121,7 @@
     var setOfDates = new Set();
     function getDestinationPerDate(result, duration) {
         var destinations = [];
-
+        setOfDates = new Set();
         for (var i=0; i < result.length; i++) {
             if(!setOfDates.has(result[i].departure_date)) {
                 destinations.push(result[i]);
@@ -276,7 +276,7 @@
         });
 
         function addRows(paths,duration) {
-            var h2 = $("#tableTitle").text("These are your possible destinations");
+            var h2 = $("#tableTitle").text("These are your possible destinations. Please click on one the itenararies to know more");
 
             var table = $("#cities");
             var thead = $("<thead></thead>");
@@ -294,22 +294,31 @@
                 for (var k = 2; k <= paths[j].length; k++) {
                     var temp = paths[j].slice(0, k);
                     var tr = $("<tr></tr>");
+                    var cities = [];
                     for (var l = 0; l < temp.length; l++) {
                         var td = $("<td></td>");
                         var p = $("<p></p>").text(temp[l]);
                         p.appendTo(td);
                         var p =  $("<p></p>").text("Departure: " + getDepartureDate(dates[j%dates.length], l==0?0:l+1));
                         p.appendTo(td);
+                        cityToDetail[temp[l]].departure_date =  getDepartureDate(dates[j%dates.length], l==0?0:l+1);
                         var p =  $("<p></p>").text("Price: " + cityToDetail[temp[l]].price);
                         p.appendTo(td);
                         td.appendTo(tr);
+                        cities.push(cityToDetail[temp[l]]);
                     }
+                    tr.attr("data-attr",JSON.stringify(cities));
                     tr.appendTo(tbody);
+
                 }
 
             }
             tbody.appendTo(table);
         }
+
+        $("body").on("click", "#cities tbody tr", function (event) {
+
+        });
     });
 
 </script>
