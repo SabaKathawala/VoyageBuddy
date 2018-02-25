@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
+
+    <style>
+        body {
+            margin: 30px 0;
+        }
+
+    </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-5">
+        <div class="offset-2 col-md-8">
+            <h1 style="text-align:center">Enter your travel origin and other details</h1>
             <form id="itinerary">
                 <div class="form-group">
                     <label for="origin">Origin*</label>
@@ -19,37 +27,53 @@
                     <input type="text" class="form-control" id="departure_date" placeholder="2018-03-03--2018-03-15">
                 </div>
                 <!--<div class="form-check">-->
-                    <!--<input type="checkbox" class="form-check-input" id="one_way">-->
-                    <!--<label class="form-check-label" for="one_way">One way trip</label>-->
+                <!--<input type="checkbox" class="form-check-input" id="one_way">-->
+                <!--<label class="form-check-label" for="one_way">One way trip</label>-->
                 <!--</div>-->
                 <!--Lots of itinerary will be removed because of this. can be removed-->
                 <!--<div class="form-check">-->
-                    <!--<input type="checkbox" class="form-check-input" id="direct">-->
-                    <!--<label class="form-check-label" for="direct">Direct flights only</label>-->
+                <!--<input type="checkbox" class="form-check-input" id="direct">-->
+                <!--<label class="form-check-label" for="direct">Direct flights only</label>-->
                 <!--</div>-->
                 <div class="form-group">
-                    <label for="duration">Duration</label>
+                    <label for="duration">Duration*</label>
                     <input type="number" class="form-control" id="duration" placeholder="Days">
                 </div>
                 <div class="form-group">
-                    <label for="max_price">Max_price</label>
+                    <label for="max_price">Max_price*</label>
                     <input type="number" class="form-control" id="max_price" placeholder="">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
-        <div class="col-md-7">
+    </div>
+    <div class="row">
+        <div class="offset-2 col-md-8">
+            <table id="cities">
 
+            </table>
         </div>
     </div>
 </div>
+
 <script
         src="http://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 
 <script>
-    var apikey = "YTpayeI2uV2Ae5DxlH4GlcIW7iawOFll";
+
+    var apikey = "ysXDMQiC5yp1TAhq6l5dARpofbZxNH1l";
+    var visited = [];
+    var citiesToVisit = [];
+    var cityToDetail = [];
+    function createTable() {
+        var table = $("#cities");
+        var thead = $("<thead></thead>");
+        thead.appendTo(table);
+        var tbody = $("<tbody></tbody>");
+        tbody.appendTo(table);
+    }
     function triggerInspirationAPI(origin, departure_date, duration, max_price) {
         var payload = {
             "apikey": apikey,
@@ -78,28 +102,120 @@
         return dest;
     }
 
-    function isDurationComplete(duration) {
-        return duration <=1;
-    }
-
-    function getDestinationPerDate(firstCall, duration) {
+    function getDestinationPerDate(result, duration) {
         var destinations = [];
         var setOfDates = new Set();
-        for (var i=0; i < firstCall.length; i++) {
-            if(!setOfDates.has(firstCall[i].departure_date)) {
-                destinations.push(firstCall[i]);
-                setOfDates.add(firstCall[i].departure_date);
+        for (var i=0; i < result.length; i++) {
+            if(!setOfDates.has(result[i].departure_date)) {
+                destinations.push(result[i]);
+                setOfDates.add(result[i].departure_date);
             }
-            if(setOfDates.length == duration+1) {
+            if(setOfDates.length == 5) {
                 break;
             }
         }
         return destinations;
     }
 
+    function getDepartureDate(date, factor) {
+        if(factor === 0) {
+            return date;
+        }
+        //adding 2*factor days
+        departure_date = new Date(new Date(date).getTime() + 24*2*factor*60*60*1000);
+        var day = departure_date.getDate() <= 9 ? "0"+departure_date.getDate(): departure_date.getDate();
+        var month = departure_date.getMonth()+1;
+        if(month <= 9) {
+            month="0"+month;
+        }
+        var year = departure_date.getFullYear();
+        return year+"-"+month+"-"+day;
+    }
+
+
+    function getCityObject(name, depth, date, price, sum, airline) {
+        return {
+            name: name,
+            neighbours: [],
+            depth: depth,
+            departure_date: date,
+            price: price,
+            sum: sum,
+            airline: airline
+        };
+    }
+
+    function getCityWithTwoBestOptions(origin, departure_date, duration, max_price) {
+        if (cityToDetail[origin].depth === 2) {
+            return cityToDetail[origin];
+        }
+        visited.push(origin);
+
+        var response = triggerInspirationAPI(origin, departure_date,
+            duration, max_price);
+        var destinations;
+        if(cityToDetail[origin].depth === 0) {
+            destinations = getDestinationPerDate(response.results, duration);
+        }
+        else {
+            destinations = response.results.splice(0,2);
+        }
+        var result = [];
+        var count = 0;
+        var max_neightbour = cityToDetail[origin].depth === 0 ? 5 : 2;
+        for (var i=0; i < destinations.length && count < max_neightbour; i++) {
+            if (!visited.includes(destinations[i].destination)) {
+                result.push(destinations[i]);
+                visited.push(destinations[i].destination);
+                count++;
+            }
+        }
+
+        for (var i=0;i<result.length;i++) {
+            var obj = getCityObject(result[i].destination, cityToDetail[origin].depth + 1, result[i].departure_date,
+                result[i].price/2,  - cityToDetail[origin].sum - result[i].price, result[i].airline);
+            cityToDetail[origin].neighbours.push(obj);
+            cityToDetail[obj.name] = obj;
+            citiesToVisit.push(obj.name);
+        }
+
+        return cityToDetail[origin];
+    }
+
+    var paths = [];
+
+    function traverseRootToLeafAllCities() {
+        var root;
+        var value;
+        Object.keys(cityToDetail).forEach(function(key) {
+            value = cityToDetail[key];
+            if (value.depth === 0) {
+                root = value;
+            }
+        });
+        var path = [];
+        traversePathInternal(root, path);
+    }
+
+    function traversePathInternal(city, path) {
+        path.push(city);
+
+        for (var i=0;i<city.neighbours.length;i++) {
+            traversePathInternal(city.neighbours[i], path);
+        }
+        if (city.neighbours.length === 0) {
+            var p = [];
+            for (var j=0;j<path.length;j++) {
+                p.push(path[j].name);
+            }
+            paths.push(p);
+        }
+        path.pop();
+    }
+
     $(document).ready(function() {
         //Flight Inspiration API
-        $("#itinerary").on("submit", function(event) {
+        $("#itinerary").submit(function(event) {
             event.preventDefault();
             //get form data
             var duration = $("#duration").val();
@@ -110,52 +226,40 @@
                 duration = 10;
             }
             if(max_price === "") {
-                max_price = 999999999;
-            }
-            //get dates
-            //var departureDates = getDepartureDates(departure_date, duration);
-            //get dest to start
-            var firstCall = triggerInspirationAPI(origin, departure_date,
-                duration, max_price);
-            //get destination per date
-            var destinations = getDestinationPerDate(firstCall.results, duration);
-            duration = duration - 2;
-            departure_date = new Date(departure_date.substr(0,10));
-            //departure_date.setDate(departure_date.getDate()+2);
-            var list = [];
-            var cities = 1;
-            for(var i =0; i<destinations.length;i++) {
-                list.push([origin, destinations[i].destination]);
+                max_price = 9999999;
             }
 
-            outer: while (!isDurationComplete(duration) && max_price > 0 && cities <= 5) {
-                while (destinations.length !== 0) {
-                    var dest = destinations.pop();
-                    max_price = max_price - dest.price;
-                    departure_date = new Date(departure_date.getTime() + 24*2*60*60*1000);
-                    var day = departure_date.getDate()<=9?"0"+departure_date.getDate():departure_date.getDate();
-                    var month = departure_date.getMonth()+1;
-                    if(month <= 9) {
-                        month="0"+month;
-                    }
-                    var year = departure_date.getFullYear();
-                    var nextDest = triggerInspirationAPI(dest.destination, year+"-"+month+"-"+day,
-                        duration, Math.trunc(max_price));
-                    if(!nextDest) {
-                        continue;
-                    }
-                    destinations.push(nextDest.results[0]);
-                    destinations.push(nextDest.results[1]);
-                    var lastEntry = list[list.length-1];
-                    var temp = Object.create(lastEntry);
-                    lastEntry.concat(nextDest.results[0].destination);
-                    list.push(lastEntry)
-                    temp.concat(nextDest.results[1].destination);
-                    list.push(temp);
-                    cities++;
+            visited = [];
+            citiesToVisit = [origin];
+            cityToDetail[origin] = getCityObject(origin, 0, departure_date.substr(0,10), 0, max_price, null);
+
+            while (citiesToVisit.length !== 0) {
+                var city = citiesToVisit.shift();
+                var factor = cityToDetail[city].depth;
+                if((duration - 2*factor) <= 1 ) {
+                    continue;
                 }
+                if(factor == 1) {
+                    departure_date = departure_date.substr(0,10);
+                }
+                getCityWithTwoBestOptions(city, getDepartureDate(departure_date, factor),
+                    duration - 2*factor, max_price);
+                console.log(cityToDetail);
             }
-            console.log(list);
+
+            for (var j=0;j<paths.length;j++) {
+                console.log("Printing path : " + (j+1));
+                var p = "";
+                for (var k=0; k<paths[j].length;k++) {
+                    if (k !== 0) {
+                        p += " -> ";
+                    }
+                    p += paths[j][k] ;
+                }
+                console.log(p);
+            }
+
+            console.log(cityToDetail);
 
         });
     });
