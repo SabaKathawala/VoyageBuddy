@@ -10,7 +10,7 @@
             margin: 30px 0;
         }
         #cities {
-            margin: 30px;
+            margin: 30px 0;
             outline: solid 2px black;
         }
         #cities tr:hover {
@@ -61,7 +61,7 @@
     </div>
     <hr/>
     <div class="row">
-        <div class="offset-2 col-md-8">
+        <div class="offset-1 col-md-10">
             <h2 id="tableTitle"></h2>
 
             <div id="scroll">
@@ -77,6 +77,8 @@
         src="http://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
+
+<script src="javascripts/bootstrap.min.js"></script>
 
 <script>
 
@@ -165,7 +167,7 @@
 
 
     function getCityWithTwoBestOptions(origin, departure_date, duration, max_price) {
-        if (cityToDetail[origin].depth === 2) {
+        if (cityToDetail[origin].depth === 5) {
             return cityToDetail[origin];
         }
         visited.push(origin);
@@ -205,7 +207,7 @@
     }
 
     var paths = [];
-
+    var clickedRow;
     function traverseRootToLeafAllCities() {
         var root;
         var value;
@@ -323,7 +325,7 @@
         }
 
         $("body").on("click", "#cities tbody tr", function (event) {
-
+            clickedRow = JSON_parse($(this).attr("data-attr"));
         });
     });
 
