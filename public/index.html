@@ -26,9 +26,10 @@
 </head>
 <body>
 <div class="container-fluid">
+    <h1 id="success" style="text-align:center></h1>
     <div class="row">
         <div class="offset-2 col-md-8">
-            <h1 style="text-align:center">Enter your travel origin and other details</h1>
+            <h2 style="text-align:center">Enter your travel origin and other details</h2>
             <form id="itinerary">
                 <div class="form-group">
                     <label for="origin">Origin*</label>
@@ -83,7 +84,7 @@
 
 <script>
 
-    var apikey = "ysXDMQiC5yp1TAhq6l5dARpofbZxNH1l";
+    var apikey = "ouLromAHFme2DdTdasBuGjS0jXOac2Cs";
     var visited = [];
     var citiesToVisit = [];
     var cityToDetail = [];
@@ -175,6 +176,9 @@
 
         var response = triggerInspirationAPI(origin, departure_date,
             duration, max_price);
+        if(!response) {
+            return;
+        }
         var destinations;
         if(cityToDetail[origin].depth === 0) {
             destinations = getDestinationPerDate(response.results, duration);
@@ -350,8 +354,15 @@
 
         $("body").on("click", "#cities tbody tr", function (event) {
             clickedRow = JSON.parse($(this).attr("data-attr"));
+            $("form").hide();
+            $("table").hide();
+            $("h2").hide();
+            $("#success").text("Enjoy your trip").show();
+
+
         });
         $("body").on("click", "#myLow", function (event) {
+
             for (var i = 0; i < clickedRow.length - 1; i++) {
                 var fares = dataEnhance(clickedRow[i].name, clickedRow[i + 1].name, clickedRow[i + 1].airline, clickedRow[i].departure_date);
             }
