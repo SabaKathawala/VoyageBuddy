@@ -312,6 +312,10 @@
                         cityToDetail[temp[l]].departure_date =  getDepartureDate(dates[j%dates.length], l==0?0:l+1);
                         var p =  $("<p></p>").text("Price: " + cityToDetail[temp[l]].price);
                         p.appendTo(td);
+                        var randomArray = ['museum','landmark','church'];
+                        var firstRandomElement = randomArray[Math.floor(Math.random()*randomArray.length)];
+                        var s =  $("<p></p>").text("City famous for: " + firstRandomElement);
+                        s.appendTo(td);
                         td.appendTo(tr);
                         cities.push(cityToDetail[temp[l]]);
                     }
