@@ -349,7 +349,7 @@
         }
 
         $("body").on("click", "#cities tbody tr", function (event) {
-            clickedRow = JSON_parse($(this).attr("data-attr"));
+            clickedRow = JSON.parse($(this).attr("data-attr"));
         });
         $("body").on("click", "#myLow", function (event) {
             for (var i = 0; i < clickedRow.length - 1; i++) {
