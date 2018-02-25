@@ -9,6 +9,18 @@
         body {
             margin: 30px 0;
         }
+        #cities {
+            margin: 30px;
+            outline: solid 2px black;
+        }
+        #cities tr:hover {
+            cursor:pointer;
+        }
+        #scroll {
+            margin: 30px 0 ;
+            overflow-y: scroll;
+            height:500px;
+        }
 
     </style>
 </head>
@@ -47,11 +59,16 @@
             </form>
         </div>
     </div>
+    <hr/>
     <div class="row">
         <div class="offset-2 col-md-8">
-            <table id="cities">
+            <h2 id="tableTitle"></h2>
+
+            <div id="scroll">
+            <table id="cities" class="table table-striped table-bordered table-hover ">
 
             </table>
+            </div>
         </div>
     </div>
 </div>
@@ -101,10 +118,10 @@
         });
         return dest;
     }
-
+    var setOfDates = new Set();
     function getDestinationPerDate(result, duration) {
         var destinations = [];
-        var setOfDates = new Set();
+
         for (var i=0; i < result.length; i++) {
             if(!setOfDates.has(result[i].departure_date)) {
                 destinations.push(result[i]);
@@ -142,8 +159,9 @@
             price: price,
             sum: sum,
             airline: airline
-        };
+    };
     }
+
 
     function getCityWithTwoBestOptions(origin, departure_date, duration, max_price) {
         if (cityToDetail[origin].depth === 2) {
@@ -216,6 +234,7 @@
     $(document).ready(function() {
         //Flight Inspiration API
         $("#itinerary").submit(function(event) {
+            $("#cities").empty();
             event.preventDefault();
             //get form data
             var duration = $("#duration").val();
@@ -230,6 +249,7 @@
             }
 
             visited = [];
+            cityToDetail = [];
             citiesToVisit = [origin];
             cityToDetail[origin] = getCityObject(origin, 0, departure_date.substr(0,10), 0, max_price, null);
 
@@ -244,24 +264,52 @@
                 }
                 getCityWithTwoBestOptions(city, getDepartureDate(departure_date, factor),
                     duration - 2*factor, max_price);
-                console.log(cityToDetail);
             }
-
-            for (var j=0;j<paths.length;j++) {
-                console.log("Printing path : " + (j+1));
-                var p = "";
-                for (var k=0; k<paths[j].length;k++) {
-                    if (k !== 0) {
-                        p += " -> ";
-                    }
-                    p += paths[j][k] ;
-                }
-                console.log(p);
-            }
+            paths = [];
+            traverseRootToLeafAllCities();
+            console.log("Paths");
+            console.log(paths);
+            addRows(paths, duration);
 
             console.log(cityToDetail);
 
         });
+
+        function addRows(paths,duration) {
+            var h2 = $("#tableTitle").text("These are your possible destinations");
+
+            var table = $("#cities");
+            var thead = $("<thead></thead>");
+            var th = $("<th></th>").text("Origin");
+            th.appendTo(thead);
+            var th = $("<th></th>").text("Destination(s)").attr("colspan", paths[0].length);
+            th.appendTo(thead);
+            thead.appendTo(table);
+            var tbody = $("<tbody></tbody>");
+            var dates = [];
+            for (var v of setOfDates) {
+                dates.push(v);
+            }
+            for (var j=0;j<paths.length;j++) {
+                for (var k = 2; k <= paths[j].length; k++) {
+                    var temp = paths[j].slice(0, k);
+                    var tr = $("<tr></tr>");
+                    for (var l = 0; l < temp.length; l++) {
+                        var td = $("<td></td>");
+                        var p = $("<p></p>").text(temp[l]);
+                        p.appendTo(td);
+                        var p =  $("<p></p>").text("Departure: " + getDepartureDate(dates[j%dates.length], l==0?0:l+1));
+                        p.appendTo(td);
+                        var p =  $("<p></p>").text("Price: " + cityToDetail[temp[l]].price);
+                        p.appendTo(td);
+                        td.appendTo(tr);
+                    }
+                    tr.appendTo(tbody);
+                }
+
+            }
+            tbody.appendTo(table);
+        }
     });
 
 </script>
