@@ -30,7 +30,8 @@ Input:
         
 # Output:
 * You can pick either of the itineraries : 
-| No. |                          Places          |                 Dates          | Approximate Fare |
+
+| No. |                Places .                  |                 Dates          | Approximate Fare |
 | --- | ---------------------------------------- | ------------------------------ | ---------------- |
 |  1. | Chicago - Boston - New York - Chicago    | 02/23/18 - 02/26/18 - 02/30/18 |       $890       |
    
