@@ -54,3 +54,8 @@ JavaScript, HTML, CSS, AJAX, Jquery, Express, Node.js
 
 # Team members: 
 Saba Kathawala, Deepika Tripathi, Mohit Kumar Paritosh Ghia
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
