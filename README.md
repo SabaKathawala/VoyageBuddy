@@ -31,11 +31,8 @@ Input:
 # Output:
 * You can pick either of the itineraries : 
 | No. |                          Places          |                 Dates          | Approximate Fare |
-| --- | ---------------------------------------- | ------------------------------ | -----------------|
-|  1. | Chicago - Boston - New York - Chicago    | 02/23/18 - 02/26/18 - 02/30/18 | $890             |
-|  2. | Chicago - Paris - Chicago                | 02/23/18 - 02/30/18  | $980             |
-|  3. | Chicago - LosAngeles - Connecticut - Chicago     | 02/24/18 - 02/26/18 - 02/30/18 | $750             |
-|  4. | Chicago - London - Chicago   | 02/23/18 - 02/29/18 | $820             |
+| --- | ---------------------------------------- | ------------------------------ | ---------------- |
+|  1. | Chicago - Boston - New York - Chicago    | 02/23/18 - 02/26/18 - 02/30/18 |       $890       |
    
 # Planned enhancements: 
 * Once the user selects the interesting itinerary, it gives you all the points of interest of the destination                    cities.
