@@ -30,14 +30,15 @@ Input:
         
 # Output:
 * You can pick either of the itineraries : 
-1. Chicago - Boston - New York - Chicago                Approximate fare: 890$
-         02/23/18 - 02/26/18 - 02/30/18
-2. Chicago - Paris - Chicago                            Approximate fare: 980$
-        02/23/18 - 02/30/18 
-3. Chicago - LosAngeles - Connecticut - Chicago         Approximate fare: 750$
-        02/24/18 - 02/26/18 - 02/30/18
-4. Chicago - London - Chicago                           Approximate fare: 820$
-                        02/23/18 - 02/29/18
+1. Chicago - Boston - New York - Chicago                Approximate fare: $890
+   02/23/18 - 02/26/18 - 02/30/18
+2. Chicago - Paris - Chicago                            Approximate fare: $980
+   02/23/18 - 02/30/18 
+3. Chicago - LosAngeles - Connecticut - Chicago         Approximate fare: $750
+   02/24/18 - 02/26/18 - 02/30/18
+4. Chicago - London - Chicago                           Approximate fare: $820
+   02/23/18 - 02/29/18
+   
 # Planned enhancements: 
 * Once the user selects the interesting itinerary, it gives you all the points of interest of the destination                    cities.
 * Then the user is promted to book the flights for the slected itinerary.
